@@ -63,6 +63,22 @@ def init_db(db_path=DB_PATH):
         CREATE TABLE activity (customer_id TEXT, activity_date TEXT, description TEXT, amount REAL, direction TEXT);
         CREATE TABLE tickets (ticket_id TEXT PRIMARY KEY, customer_id TEXT, subject TEXT, status TEXT,
             opened_date TEXT, next_step TEXT);
+        CREATE TABLE IF NOT EXISTS security_audit_log (
+            audit_id TEXT PRIMARY KEY,
+            timestamp TEXT,
+            customer_id TEXT,
+            prompt_hash TEXT,
+            masked_prompt TEXT,
+            is_safe INTEGER,
+            risk_level TEXT,
+            injection_score REAL,
+            attack_vectors TEXT,
+            pii_detected TEXT,
+            toxicity_score REAL,
+            action_taken TEXT,
+            details TEXT,
+            latency_ms REAL
+        );
     """)
     cur.executemany("INSERT INTO customers VALUES (?,?,?,?,?)", CUSTOMERS)
     cur.executemany("INSERT INTO accounts VALUES (?,?,?,?,?,?,?,?)", ACCOUNTS)

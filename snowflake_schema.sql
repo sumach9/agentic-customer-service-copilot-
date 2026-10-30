@@ -8,12 +8,20 @@
 --   CUSTOMER_ACCOUNTS (customer_id, account_id, account_type, status, balance, opened_date)
 --   ACTIVITY_HISTORY (customer_id, activity_date, description, amount, direction)
 --   TICKET_STATUS (ticket_id, customer_id, subject, status, opened_date, next_step)
+--   SECURITY_AUDIT_LOG (audit_id, timestamp, customer_id, prompt_hash, masked_prompt,
+--                       is_safe, risk_level, injection_score, attack_vectors,
+--                       pii_detected, toxicity_score, action_taken, details, latency_ms)
 --
 -- Example agent query (same shape in SQLite and Snowflake):
 --   SELECT * FROM CUSTOMER_ACCOUNTS WHERE customer_id = :customer_id;
 --   SELECT * FROM TICKET_STATUS
 --    WHERE ticket_id = :ticket_id AND customer_id = :customer_id;
+--   INSERT INTO SECURITY_AUDIT_LOG VALUES (:audit_id, :timestamp, :customer_id, ...);
 --
 -- Policy documents would live in a governed document store with
 -- version, effective_date, and status columns; only status = 'current'
 -- rows are retrievable. See copilot/retrieval.py.
+--
+-- Einstein Trust Layer:
+-- Enforces Zero Data Retention by writing cryptographic prompt hashes and
+-- masked token representations instead of raw unredacted customer PII.
